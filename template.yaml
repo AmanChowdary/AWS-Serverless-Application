@@ -1,0 +1,115 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  AWS Serverless Task Manager API (Lambda, API Gateway, DynamoDB)
+
+Globals:
+  Function:
+    Timeout: 10
+    MemorySize: 128 # Cost-optimized
+    Runtime: nodejs18.x
+    Environment:
+      Variables:
+        TASKS_TABLE: !Ref TasksTable
+    Tracing: Active # X-Ray tracing
+    LoggingConfig:
+      LogFormat: JSON
+
+Resources:
+  TaskApiFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: src/handlers/taskHandler.handler
+      CodeUri: .
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref TasksTable
+      Events:
+        Api:
+          Type: Api
+          Properties:
+            RestApiId: !Ref TaskApi
+            Path: /tasks
+            Method: ANY
+        ApiWithId:
+          Type: Api
+          Properties:
+            RestApiId: !Ref TaskApi
+            Path: /tasks/{id}
+            Method: ANY
+      Environment:
+        Variables:
+          TASKS_TABLE: !Ref TasksTable
+      # CloudWatch logs enabled by default
+
+  TasksTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      AttributeDefinitions:
+        - AttributeName: id
+          AttributeType: S
+      KeySchema:
+        - AttributeName: id
+          KeyType: HASH
+      BillingMode: PAY_PER_REQUEST # Cost-optimized
+
+  # Cognito User Pool for authentication
+  CognitoUserPool:
+    Type: AWS::Cognito::UserPool
+    Properties:
+      UserPoolName: TaskManagerUserPool
+      AutoVerifiedAttributes:
+        - email
+      Policies:
+        PasswordPolicy:
+          MinimumLength: 8
+          RequireUppercase: true
+          RequireLowercase: true
+          RequireNumbers: true
+          RequireSymbols: false
+
+  # SSM Parameter to store Cognito User Pool ID
+  CognitoUserPoolIdParameter:
+    Type: AWS::SSM::Parameter
+    Properties:
+      Name: /taskmanager/cognitoUserPoolId
+      Type: String
+      Value: !Ref CognitoUserPool
+
+  # Update TaskApi to use Cognito authorizer
+  TaskApi:
+    Type: AWS::Serverless::Api
+    Properties:
+      StageName: prod
+      EndpointConfiguration: REGIONAL
+      Auth:
+        DefaultAuthorizer: CognitoAuthorizer
+        AddDefaultAuthorizerToCorsPreflight: false
+        Authorizers:
+          CognitoAuthorizer:
+            UserPoolArn: !GetAtt CognitoUserPool.Arn
+      MethodSettings:
+        - ResourcePath: '/*'
+          HttpMethod: '*'
+          LoggingLevel: INFO
+          DataTraceEnabled: true
+      AccessLogSetting:
+        DestinationArn: !Sub 'arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/apigateway/task-api-access-logs'
+        Format: '{"requestId":"$context.requestId","ip":"$context.identity.sourceIp","caller":"$context.identity.caller","user":"$context.identity.user","requestTime":"$context.requestTime","httpMethod":"$context.httpMethod","resourcePath":"$context.resourcePath","status":"$context.status","protocol":"$context.protocol","responseLength":"$context.responseLength"}'
+      ApiKeySourceType: HEADER
+      Cors:
+        AllowMethods: "'OPTIONS,GET,POST,PUT,DELETE'"
+        AllowHeaders: "'Content-Type,Authorization'"
+        AllowOrigin: "'*'"
+      # API Key will be auto-generated
+
+Outputs:
+  ApiUrl:
+    Description: 'API Gateway endpoint URL for Prod stage'
+    Value: !Sub 'https://${TaskApi}.execute-api.${AWS::Region}.amazonaws.com/prod/'
+  TasksTableName:
+    Description: 'DynamoDB Table Name'
+    Value: !Ref TasksTable
+  CognitoUserPoolId:
+    Description: 'Cognito User Pool ID'
+    Value: !Ref CognitoUserPool

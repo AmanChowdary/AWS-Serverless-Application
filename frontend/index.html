@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Task Manager API Tester</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 2em; }
+    input, textarea { width: 100%; margin-bottom: 1em; }
+    button { margin-right: 1em; }
+    #result { margin-top: 2em; white-space: pre-wrap; background: #f4f4f4; padding: 1em; }
+  </style>
+</head>
+<body>
+  <h1>Task Manager API Tester</h1>
+  <label>API Base URL:<br><input id="apiUrl" value="" placeholder="https://.../prod"></label>
+  <label>JWT Token:<br><input id="jwt" placeholder="Paste Cognito JWT token here"></label>
+  <label>Task ID:<br><input id="taskId" placeholder="(for get/update/delete)"></label>
+  <label>Title:<br><input id="title"></label>
+  <label>Description:<br><textarea id="desc"></textarea></label>
+  <label>Status:<br><input id="status" value="pending"></label>
+  <div>
+    <button onclick="createTask()">Create</button>
+    <button onclick="getTask()">Get</button>
+    <button onclick="listTasks()">List</button>
+    <button onclick="updateTask()">Update</button>
+    <button onclick="deleteTask()">Delete</button>
+  </div>
+  <div id="result"></div>
+  <script>
+    function getHeaders() {
+      const jwt = document.getElementById('jwt').value;
+      return {
+        'Content-Type': 'application/json',
+        'Authorization': jwt
+      };
+    }
+    function apiUrl(path = '') {
+      let base = document.getElementById('apiUrl').value.replace(/\/$/, '');
+      return base + '/tasks' + (path ? '/' + path : '');
+    }
+    async function createTask() {
+      const res = await fetch(apiUrl(), {
+        method: 'POST',
+        headers: getHeaders(),
+        body: JSON.stringify({
+          title: document.getElementById('title').value,
+          description: document.getElementById('desc').value,
+          status: document.getElementById('status').value
+        })
+      });
+      document.getElementById('result').textContent = await res.text();
+    }
+    async function getTask() {
+      const id = document.getElementById('taskId').value;
+      const res = await fetch(apiUrl(id), {
+        headers: getHeaders()
+      });
+      document.getElementById('result').textContent = await res.text();
+    }
+    async function listTasks() {
+      const res = await fetch(apiUrl(), {
+        headers: getHeaders()
+      });
+      document.getElementById('result').textContent = await res.text();
+    }
+    async function updateTask() {
+      const id = document.getElementById('taskId').value;
+      const res = await fetch(apiUrl(id), {
+        method: 'PUT',
+        headers: getHeaders(),
+        body: JSON.stringify({
+          title: document.getElementById('title').value,
+          description: document.getElementById('desc').value,
+          status: document.getElementById('status').value
+        })
+      });
+      document.getElementById('result').textContent = await res.text();
+    }
+    async function deleteTask() {
+      const id = document.getElementById('taskId').value;
+      const res = await fetch(apiUrl(id), {
+        method: 'DELETE',
+        headers: getHeaders()
+      });
+      document.getElementById('result').textContent = await res.text();
+    }
+  </script>
+</body>
+</html> 

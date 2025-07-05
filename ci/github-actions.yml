@@ -1,0 +1,55 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      # Checkout code
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      # Set up Node.js
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18.x'
+
+      # Install dependencies
+      - name: Install dependencies
+        run: npm ci
+
+      # Set up AWS CLI
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1 # Change as needed
+
+      # Set up SAM CLI
+      - name: Install AWS SAM CLI
+        run: |
+          pip install aws-sam-cli
+
+      # Build SAM application
+      - name: SAM Build
+        run: sam build
+
+      # Deploy SAM application (auto-confirm)
+      - name: SAM Deploy
+        run: |
+          sam deploy --no-confirm-changeset --no-fail-on-empty-changeset --stack-name task-manager-api --capabilities CAPABILITY_IAM --region us-east-1
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+
+      # (Optional) Post-deployment: print API endpoint
+      - name: Show API Endpoint
+        run: |
+          aws cloudformation describe-stacks --stack-name task-manager-api --region us-east-1 --query "Stacks[0].Outputs" 
