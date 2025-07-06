@@ -119,4 +119,6 @@ samconfig.toml
 
 # Test outputs
 test-results/
-coverage/ 
+coverage/ node_modules/
+.aws-sam/
+package-lock.json
