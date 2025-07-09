@@ -113,3 +113,5 @@ Outputs:
   CognitoUserPoolId:
     Description: 'Cognito User Pool ID'
     Value: !Ref CognitoUserPool
+
+# echo "<!-- test change -->" >> template.yaml
