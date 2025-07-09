@@ -14,8 +14,9 @@ A production-grade, fully serverless web application built on AWS with modern ar
 - Development
 - Deployment
 - Monitoring
-- Contributing
-- License
+- Security
+- Cost Optimization
+- Acknowledgements
 
 ## 🎯 Overview
 
