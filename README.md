@@ -2,24 +2,20 @@
 
 A production-grade, fully serverless web application built on AWS with modern architecture, comprehensive testing, and automated CI/CD pipeline.
 
-[![CI/CD Pipeline](https://github.com/yourusername/aws-serverless-task-manager/workflows/CI/CD%20Pipeline/badge.svg)](https://github.com/yourusername/aws-serverless-task-manager/actions)
-[![Test Coverage](https://codecov.io/gh/yourusername/aws-serverless-task-manager/branch/main/graph/badge.svg)](https://codecov.io/gh/yourusername/aws-serverless-task-manager)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![AWS](https://img.shields.io/badge/AWS-Serverless-orange.svg)](https://aws.amazon.com/serverless/)
 
 ## 📋 Table of Contents
 
-- [Overview](#overview)
-- [Features](#features)
-- [Architecture](#architecture)
-- [Tech Stack](#tech-stack)
-- [Quick Start](#quick-start)
-- [API Documentation](#api-documentation)
-- [Development](#development)
-- [Deployment](#deployment)
-- [Monitoring](#monitoring)
-- [Contributing](#contributing)
-- [License](#license)
+- Overview
+- Features
+- Architecture
+- Tech Stack
+- Quick Start
+- API Documentation
+- Development
+- Deployment
+- Monitoring
+- Contributing
+- License
 
 ## 🎯 Overview
 
@@ -329,7 +325,6 @@ npm run deploy:prod
 ./scripts/deploy.sh my-stack us-west-2 production
 ```
 
-For detailed deployment instructions, see [`docs/DEPLOYMENT.md`](docs/DEPLOYMENT.md).
 
 ## 📊 Monitoring
 
@@ -400,17 +395,6 @@ The application automatically sets up CloudWatch alarms for:
 
 *Costs vary based on usage patterns and region*
 
-## 🤝 Contributing
-
-We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) for details.
-
-### Development Workflow
-
-1. **Fork** the repository
-2. **Create** a feature branch (`git checkout -b feature/amazing-feature`)
-3. **Commit** your changes (`git commit -m 'Add amazing feature'`)
-4. **Push** to the branch (`git push origin feature/amazing-feature`)
-5. **Open** a Pull Request
 
 ### Code Standards
 
@@ -420,9 +404,6 @@ We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) f
 - Ensure all tests pass
 - Run linting before committing
 
-## 📄 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ## 🙏 Acknowledgments
 
@@ -430,16 +411,3 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - **Jest** for comprehensive testing capabilities
 - **Font Awesome** for beautiful icons
 - **GitHub Actions** for seamless CI/CD
-
-## 📞 Support
-
-- **Documentation**: Check the [docs](docs/) folder
-- **Issues**: Report bugs via [GitHub Issues](https://github.com/yourusername/aws-serverless-task-manager/issues)
-- **Discussions**: Join conversations in [GitHub Discussions](https://github.com/yourusername/aws-serverless-task-manager/discussions)
-- **Email**: Contact us at support@yourcompany.com
-
----
-
-**Made with ❤️ using AWS Serverless technologies**
-
-*This project demonstrates modern cloud-native development practices and is suitable for production use.*
