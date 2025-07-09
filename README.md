@@ -148,8 +148,8 @@ graph TD
 
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/aws-serverless-task-manager.git
-cd aws-serverless-task-manager
+git clone https://github.com/AmanChowdary/AWS-Serverless-Application.git
+cd AWS-serverless-application
 
 # Install dependencies
 npm ci
@@ -256,7 +256,7 @@ npm run local:start
 ### Project Structure
 
 ```
-aws-serverless-task-manager/
+aws-serverless-application/
 ├── src/
 │   └── handlers/
 │       ├── taskHandler.js          # Main Lambda function
