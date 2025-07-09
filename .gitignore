@@ -122,3 +122,5 @@ test-results/
 coverage/ node_modules/
 .aws-sam/
 package-lock.json
+
+# echo "# test change" >> .gitignore
